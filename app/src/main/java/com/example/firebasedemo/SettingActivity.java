@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +35,34 @@ public class SettingActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        button = (Button)findViewById(R.id.btn_ldmode);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            }
+        });
+        button = (Button)findViewById(R.id.btn_lightmode);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        });
+        button = (Button)findViewById(R.id.btn_darkmode);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+        });
+
+
+//        if(isNightModeOn){
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//            switch_btn.text = "Enable Dark Mode"
+//        } else {
+//
+//            switch_btn.text = "Disable Dark Mode"
+//        }
     }
 
 }

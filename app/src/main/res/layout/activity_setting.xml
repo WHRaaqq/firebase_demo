@@ -31,15 +31,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <Button
-                android:id="@+id/btn_logout2"
-                android:layout_width="match_parent"
+                android:id="@+id/btn_ldmode"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="logout" />
+                android:text="적응형" />
+
+            <Button
+                android:id="@+id/btn_lightmode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="라이트" />
+
+            <Button
+                android:id="@+id/btn_darkmode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="다크" />
+
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
