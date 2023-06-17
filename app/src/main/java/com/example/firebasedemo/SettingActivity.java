@@ -1,5 +1,6 @@
 package com.example.firebasedemo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -15,14 +17,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
+
 
         Button button = (Button)findViewById(R.id.btn_logout);
         button.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +61,12 @@ public class SettingActivity extends AppCompatActivity {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
         });
+        button = (Button)findViewById(R.id.btn_setAPI);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                askAPIKey();
+            }
+        });
 
 
 //        if(isNightModeOn){
@@ -63,6 +76,36 @@ public class SettingActivity extends AppCompatActivity {
 //
 //            switch_btn.text = "Disable Dark Mode"
 //        }
+    }
+
+    public void askAPIKey() {
+        final EditText txtEdit = new EditText( this);
+
+        AlertDialog.Builder clsBuilder = new AlertDialog.Builder( this );
+        clsBuilder.setTitle( "api key" );
+        clsBuilder.setView( txtEdit );
+        clsBuilder.setPositiveButton("확인",
+                new DialogInterface.OnClickListener() {
+                    public void onClick( DialogInterface dialog, int which) {
+                        String strText = txtEdit.getText().toString();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("key", strText);
+
+                        db.collection(uid).document("APIKEY")
+                                .set(data);
+                    }
+                });
+        clsBuilder.setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        clsBuilder.show();
+
     }
 
 }

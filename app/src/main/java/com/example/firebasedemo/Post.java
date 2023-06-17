@@ -16,16 +16,18 @@ public class Post {
     public Date date;
 
     public String poem;
+    public String image;
 
     public Post() {
         this.date = Calendar.getInstance().getTime();
     }
 
-    public Post(String title, String content, Date date, String poem) {
+    public Post(String title, String content, Date date, String poem, String image) {
         this.title = title;
         this.content = content;
         this.date = date;
         this.poem = poem;
+        this.image = image;
     }
 
     public Post(Intent intent) {
@@ -35,6 +37,7 @@ public class Post {
         this.date = new Date();
         this.date.setTime(intent.getLongExtra("post_date", -1));
         this.poem = intent.getStringExtra("post_poem");
+        this.image = intent.getStringExtra("post_image");
     }
 
     public void addToIntent(Intent intent) {
@@ -43,6 +46,7 @@ public class Post {
         intent.putExtra("post_title", this.title);
         intent.putExtra("post_date", this.date.getTime());
         intent.putExtra("post_poem", this.poem);
+        intent.putExtra("post_image", this.image);
     }
 
     //public String getId() {return id;}
@@ -56,6 +60,8 @@ public class Post {
     }
 
     public Date getDate() {return date;}
+    public String getPoem() {return poem;}
+    public String getImage() {return image;}
 
 
 }

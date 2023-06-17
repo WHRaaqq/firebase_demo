@@ -12,7 +12,6 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,6 +25,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'com.example.firebasedemo'
 }
 
 dependencies {
@@ -43,4 +43,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:okhttp")
+    implementation 'com.squareup.picasso:picasso:2.8'
 }

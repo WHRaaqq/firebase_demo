@@ -3,6 +3,9 @@ package com.example.firebasedemo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +33,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,27 +67,26 @@ public class ListActivity extends AppCompatActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.list_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        TextView tv_title = findViewById(R.id.toolbar_title);
+        tv_title.setText("My Diary");
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        Button button = (Button)findViewById(R.id.btn_list_add);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Post emptyPost = new Post();
-                Intent it = new Intent(view.getContext(), EditActivity.class);
-                emptyPost.addToIntent(it);
-                startActivity(it);
-            }
-        });
-        button = (Button)findViewById(R.id.btn_list_setting);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent it = new Intent(view.getContext(), SettingActivity.class);
-                startActivity(it);
-            }
-        });
+//        Button button = (Button)findViewById(R.id.btn_list_add);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+//        button = (Button)findViewById(R.id.btn_list_setting);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         uid = user.getUid();
@@ -104,6 +107,41 @@ public class ListActivity extends AppCompatActivity {
 //        adapter = new ListViewAdapter(pl, this);
 
         loadList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadList();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent it;
+        switch (item.getItemId()) {
+            case R.id.btn_toolbar_add:
+                Post emptyPost = new Post();
+                it = new Intent(this, EditActivity.class);
+                emptyPost.addToIntent(it);
+                startActivity(it);
+                return true;
+
+            case R.id.btn_toolbar_setting:
+                it = new Intent(this, SettingActivity.class);
+                startActivity(it);
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void loadList() {
