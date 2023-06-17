@@ -2,7 +2,9 @@ package com.example.firebasedemo;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText et_email;
     private EditText et_password;
 
+    private String loginId, loginPw;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,18 +36,18 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        if (mAuth.getCurrentUser() != null) {
+            moveActivity();
+        }
+
         et_email = findViewById(R.id.editTextTextEmailAddress);
         et_password = findViewById(R.id.editTextTextPassword);
     }
 
-    private void moveActivity(FirebaseUser user) {
-        if(user != null) {
-
+    private void moveActivity() {
             Intent it = new Intent(this, ListActivity.class);
-            it.putExtra("it_user",user);
             startActivity(it);
             finish();
-        }
     }
 
     public void Login(View v) {
@@ -57,8 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            moveActivity(user);
+                            moveActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -67,9 +70,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
     }
 
     public void createAccount(View v) {
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(getApplicationContext(), "get user info", Toast.LENGTH_SHORT).show();
 
-                            moveActivity(user);
+                            moveActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -102,9 +102,5 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
-
     }
-
-
-
 }
