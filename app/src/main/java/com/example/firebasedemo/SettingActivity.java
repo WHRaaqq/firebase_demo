@@ -3,14 +3,17 @@ package com.example.firebasedemo;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +32,14 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.list_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        TextView tv_title = findViewById(R.id.toolbar_title);
+        tv_title.setText("Setting");
 
         Button button = (Button)findViewById(R.id.btn_logout);
         button.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +88,13 @@ public class SettingActivity extends AppCompatActivity {
 //        }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent it = new Intent(this, ListActivity.class);
+        startActivity(it);
+        finish();
+    }
+
     public void askAPIKey() {
         final EditText txtEdit = new EditText( this);
 
@@ -96,6 +113,8 @@ public class SettingActivity extends AppCompatActivity {
 
                         db.collection(uid).document("APIKEY")
                                 .set(data);
+                        Toast.makeText(SettingActivity.this, "키 설정:"+strText, Toast.LENGTH_SHORT).show();
+
                     }
                 });
         clsBuilder.setNegativeButton("취소",
@@ -106,6 +125,21 @@ public class SettingActivity extends AppCompatActivity {
                 });
         clsBuilder.show();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent it;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                it = new Intent(this, ListActivity.class);
+                startActivity(it);
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

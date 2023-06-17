@@ -71,8 +71,8 @@ public class EditActivity extends AppCompatActivity {
             = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
             .build();
 
     @Override
@@ -128,7 +128,7 @@ public class EditActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AiGenerateImage(post.content);
+                AiGenerateScene(post.content);
             }
         });
 
@@ -196,11 +196,13 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void AiGeneratePoem(String content){
+        post.content = ev_content.getText().toString();
+
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("model","text-davinci-003");
             jsonBody.put("prompt","다음의 일기를 시로 만들어 줘. 내용은 다음과 같아.\n"+content);
-            jsonBody.put("max_tokens",2000);
+            jsonBody.put("max_tokens",3000);
             jsonBody.put("temperature",0);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -268,7 +270,73 @@ public class EditActivity extends AppCompatActivity {
     }
 
 
+    private void AiGenerateScene(String content) {
+        post.content = ev_content.getText().toString();
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("model","text-davinci-003");
+            jsonBody.put("prompt","다음의 일기의 장면 중 하나만 한 문장으로 묘사해줘. 내용은 다음과 같아.\n"+content);
+            jsonBody.put("max_tokens",3000);
+            jsonBody.put("temperature",0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody body = RequestBody.create(jsonBody.toString(),JSON);
+        Request request = new Request.Builder()
+                .url("https://api.openai.com/v1/completions")
+                .header("Authorization","Bearer "+APIkey)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                tv_poem.setText("장면 생성에 실패했습니다. 다시 시도해주세요");
+                Log.d("failed",e.getMessage());
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                //  Toast.makeText(getApplicationContext(), "responed!", Toast.LENGTH_SHORT).show();
+
+                if(response.isSuccessful()){
+                    JSONObject  jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        JSONArray jsonArray = jsonObject.getJSONArray("choices");
+                        String poem = jsonArray.getJSONObject(0).getString("text");
+
+                        //Toast.makeText(getApplicationContext(),poem.trim(),Toast.LENGTH_LONG).show();
+                        //Log.d("scene :"+poem,response.body().toString());
+                        //addPoem(poem);
+                        AiGenerateImage(poem.trim());
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    JSONObject  jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        //JSONArray jsonArray = jsonObject.getJSONArray("choices");
+                        String result = jsonObject.toString();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //addResponse("Failed to load response due to "+response.body().toString());
+                    Log.d("case1?",response.body().toString());
+                    tv_poem.setText("장면 생성에 실패했습니다. 다시 시도해주세요");
+
+                }
+            }
+        });
+    }
+
+
     private void AiGenerateImage(String content){
+        post.content = ev_content.getText().toString();
+
         JSONObject jsonBody = new JSONObject();
         try{
             jsonBody.put("prompt",content);
@@ -298,6 +366,7 @@ public class EditActivity extends AppCompatActivity {
                     post.image = imageUrl;
                     loadImage(imageUrl);
                 }catch (Exception e){
+                    Toast.makeText(getApplicationContext(),"Failed to generate image",Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
@@ -311,4 +380,50 @@ public class EditActivity extends AppCompatActivity {
             Picasso.get().load(url).into(iv_image);
         });
     }
+
+//    private void AiGenerateImage(String content){
+//        post.content = ev_content.getText().toString();
+//
+//        JSONObject jsonBody = new JSONObject();
+//        try{
+//            jsonBody.put("prompt",content);
+//            jsonBody.put("size","512x512");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        RequestBody requestBody = RequestBody.create(jsonBody.toString(),JSON);
+//        Request request = new Request.Builder()
+//                .url("https://api.openai.com/v1/images/generations")
+//                .header("Authorization","Bearer "+APIkey)
+//                .post(requestBody)
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                Toast.makeText(getApplicationContext(),"Failed to generate image",Toast.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//
+//                try{
+//                    JSONObject jsonObject = new JSONObject(response.body().string());
+//                    String imageUrl = jsonObject.getJSONArray("data").getJSONObject(0).getString("url");
+//                    post.image = imageUrl;
+//                    loadImage(imageUrl);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
+//
+//    void loadImage(String url){
+//        //load image
+//
+//        runOnUiThread(()->{
+//            Picasso.get().load(url).into(iv_image);
+//        });
+//    }
 }
