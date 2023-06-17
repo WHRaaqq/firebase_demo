@@ -196,6 +196,8 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void AiGeneratePoem(String content){
+        post.content = ev_content.getText().toString();
+
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("model","text-davinci-003");
@@ -269,6 +271,8 @@ public class EditActivity extends AppCompatActivity {
 
 
     private void AiGenerateImage(String content){
+        post.content = ev_content.getText().toString();
+
         JSONObject jsonBody = new JSONObject();
         try{
             jsonBody.put("prompt",content);

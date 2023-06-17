@@ -46,7 +46,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.Custom
         final Post item = items.get(position);
         String str_date = sdf.format(item.date);
         holder.date.setText(str_date);
-        holder.content.setText(item.content);
+        holder.content.setText(item.title);
     }
 
     @Override

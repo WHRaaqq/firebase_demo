@@ -121,7 +121,6 @@ public class PostActivity extends AppCompatActivity {
 
             case R.id.btn_toolbar_delete:
                 askDelete();
-                Toast.makeText(getApplicationContext(), "검색버튼클릭", Toast.LENGTH_SHORT).show();
                 return true;
 
             default:
